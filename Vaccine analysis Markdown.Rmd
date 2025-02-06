@@ -9,6 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(readr)
+library(ggplot2)
 
 opinion_levels <- c("Strongly disagree", "Tend to disagree", "Neither agree nor disagree", "Tend to agree", "Strongly agree")
 education_levels <- c("Primary school", "Secondary school (age under 15 years old)", "GNVQ / GSVQ / GCSE/ SCE standard.", "NVQ1, NVQ2", "NVQ3/ SCE Higher Grade/ Advanced GNVQ/ GCE A/AS or similar.", "NVQ4 / HNC / HND / Bachelor's degree or similar.", "NVQ5 or post-graduate diploma.")
@@ -30,3 +31,27 @@ data_vaccines <- read_csv('../Vaccines/trust-vaccines.csv',
                           ))
 ```
 
+#Demographic characteristics
+
+##Gender
+```{r}
+data_vaccines %>%
+  count(gender_nb)
+
+
+data_vaccines %>%
+  ggplot (aes(x = gender_nb)) +
+  geom_bar()
+
+```
+
+##Age
+
+```{r}
+data_vaccines %>%
+  summarise (n=n(), M = mean (age))
+
+data_vaccines %>%
+  ggplot (aes(x=age)) +
+  geom_histogram()
+```
