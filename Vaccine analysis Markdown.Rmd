@@ -68,7 +68,7 @@ data_vaccines %>%
   geom_histogram()
 ```
 
-## Education
+##Education
 
 ```{r}
 data_vaccines %>%
@@ -78,7 +78,7 @@ data_vaccines %>%
   ggplot(aes(x=hhedqual))+
   geom_bar() + coord_flip()
 ```
-# Opinion statistics
+#Opinion statistics
 
 ```{r}
 data_vaccines_opinions <- data_vaccines %>%
