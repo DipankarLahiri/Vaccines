@@ -12,6 +12,8 @@ library(readr)
 library(ggplot2)
 library(knitr)
 
+options (scipen = 999)
+
 opinion_levels <- c("Strongly disagree", "Tend to disagree", "Neither agree nor disagree", "Tend to agree", "Strongly agree")
 education_levels <- c("Primary school", "Secondary school (age under 15 years old)", "GNVQ / GSVQ / GCSE/ SCE standard.", "NVQ1, NVQ2", "NVQ3/ SCE Higher Grade/ Advanced GNVQ/ GCE A/AS or similar.", "NVQ4 / HNC / HND / Bachelor's degree or similar.", "NVQ5 or post-graduate diploma.")
 
@@ -96,4 +98,60 @@ data_vaccines_opinions_median
 
 data_vaccines_opinions_median %>%
   ggplot(aes(x= Item, y= Median)) + geom_point() + coord_flip()
+```
+```{r}
+data_vaccines <- data_vaccines %>%
+  mutate (
+    Female = gender_nb == "Female",
+    Male = gender_nb == "Male",
+    Non_binary = gender_nb != "Male" & gender_nb != "Female",
+    Gov_honest = govhonest_coded > 3,
+    Gov_right = govright_coded > 3,
+    Gov_unfair = govunfair_coded > 3,
+    Gov_ignore = govignore_coded > 3,
+    Gov_cautious = govcautious_coded > 3,
+    Gov_xbel = govxbel_coded > 3,
+    Vac_healthy = vacch_coded >3,
+    Vaccines_Safe = vacsafe_coded > 3,
+    Vac_work = vacwork_coded > 3
+    )
+
+data_vaccines %>%
+  group_by(Female) %>%
+  summarise(
+    n = n(),
+    Vac_Safe_Agree = sum(Vaccines_Safe, na.rm = TRUE)
+  ) %>%
+  mutate (
+    Percentage = round (Vac_Safe_Agree / n * 100)
+  )
+
+chisq.test(
+  data_vaccines$Female,
+  data_vaccines$Vaccines_Safe
+)
+
+```
+```{r}
+fisher.test(
+  data_vaccines$Female,
+  data_vaccines$Vaccines_Safe
+)
+```
+
+```{r}
+data_vaccines %>%
+  wilcox.test(
+    vacsafe_coded ~ Female,
+    data = .
+  )
+```
+
+```{r}
+data_vaccines %>%
+  t.test (
+    age ~ Vaccines_Safe,
+    var.equal = FALSE,
+    data = .
+  )
 ```
