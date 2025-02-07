@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(readr)
 library(ggplot2)
+library(knitr)
 
 opinion_levels <- c("Strongly disagree", "Tend to disagree", "Neither agree nor disagree", "Tend to agree", "Strongly agree")
 education_levels <- c("Primary school", "Secondary school (age under 15 years old)", "GNVQ / GSVQ / GCSE/ SCE standard.", "NVQ1, NVQ2", "NVQ3/ SCE Higher Grade/ Advanced GNVQ/ GCE A/AS or similar.", "NVQ4 / HNC / HND / Bachelor's degree or similar.", "NVQ5 or post-graduate diploma.")
@@ -29,9 +30,18 @@ data_vaccines <- read_csv('../Vaccines/trust-vaccines.csv',
                              col_factor(ordered = TRUE, levels = opinion_levels),
                              col_factor(ordered = TRUE, levels = opinion_levels)
                           ))
+
+data_vaccines <- data_vaccines %>%
+  mutate (
+    across (
+      .cols = c(starts_with('gov'), starts_with('vac')),
+      .fns = as.numeric,
+      .names = '{.col}_coded'
+    )
+  )
 ```
 
-#Demographic characteristics
+#Demographic statistics
 
 ##Gender
 ```{r}
@@ -56,4 +66,34 @@ data_vaccines %>%
 data_vaccines %>%
   ggplot (aes(x=age)) +
   geom_histogram()
+```
+
+## Education
+
+```{r}
+data_vaccines %>%
+     count(hhedqual)
+
+data_vaccines %>%
+  ggplot(aes(x=hhedqual))+
+  geom_bar() + coord_flip()
+```
+# Opinion statistics
+
+```{r}
+data_vaccines_opinions <- data_vaccines %>%
+ select (ends_with('coded')) %>%
+   lapply(
+    median, na.rm = TRUE
+  )
+
+data_vaccines_opinions_median <- tibble(
+  Item = data_vaccines_opinions %>% names,
+  Median = data_vaccines_opinions %>% unlist
+)
+
+data_vaccines_opinions_median
+
+data_vaccines_opinions_median %>%
+  ggplot(aes(x= Item, y= Median)) + geom_point() + coord_flip()
 ```
