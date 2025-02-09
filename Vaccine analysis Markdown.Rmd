@@ -153,6 +153,8 @@ data_vaccines %>%
     Percentage = round (Vac_Safe_Agree / n * 100)
   )
 
+#Tests
+
 chisq.test(
   data_vaccines$Female,
   data_vaccines$Vaccines_Safe
@@ -181,4 +183,26 @@ data_vaccines %>%
     var.equal = FALSE,
     data = .
   )
+```
+#Analysis with scores 
+
+```{r}
+data_vaccines %>%
+  ggplot (aes(x=gov_trust, fill = Female)) +
+  geom_histogram(binwidth = 0.5)
+
+data_vaccines %>%
+  ggplot (aes(x=vac_trust, fill = Female)) +
+  geom_histogram(binwidth = 0.5)
+```
+```{r}
+data_vaccines %>%
+  ggplot (aes(x=gov_trust, y=vac_trust, colour = Female)) +
+  geom_jitter(size = 0.5)
+```
+
+```{r}
+data_vaccines %>%
+  ggplot (aes(x=age, y=vac_trust, colour = Female)) +
+  geom_jitter(size = 0.5)
 ```
