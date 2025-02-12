@@ -206,3 +206,46 @@ data_vaccines %>%
   ggplot (aes(x=age, y=vac_trust, colour = Female)) +
   geom_jitter(size = 0.5)
 ```
+#Correlations
+
+```{r}
+data_vaccines %>%
+  t.test(
+    vac_trust ~ Female,
+    var.equal = FALSE,
+    data = .
+  )
+
+data_vaccines %>%
+  mutate(Female = as.numeric(Female)) %>%
+  cor.test(~ vac_trust + Female, data = .)
+
+data_vaccines %>%
+  mutate(Female = as.numeric(Female)) %>%
+  cor.test(~ gov_trust + Female, data = .)
+
+data_vaccines %>%
+  cor.test(~ gov_trust + age, data = .)
+
+data_vaccines %>%
+  cor.test(~ vac_trust + age, data = .)
+
+data_vaccines %>%
+  cor.test(~ gov_trust + vac_trust, data = .)
+
+
+```
+# Linear regression modelling
+
+```{r}
+
+data_vaccines %>%
+  mutate (Female = Female %>% as.numeric) %>%
+  lm (vac_trust ~ age + gov_trust + Female, data = .) %>%
+  summary
+
+```
+
+```{r}
+
+```
